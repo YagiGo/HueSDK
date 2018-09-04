@@ -32,6 +32,11 @@ import com.philips.lighting.hue.sdk.wrapper.domain.device.light.LightPoint;
 import com.philips.lighting.hue.sdk.wrapper.domain.device.light.LightState;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridge;
 import com.philips.lighting.hue.sdk.wrapper.knownbridges.KnownBridges;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,14 +78,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         // Setup the UI
-        statusTextView = (TextView)findViewById(R.id.status_text);
-        bridgeDiscoveryListView = (ListView)findViewById(R.id.bridge_discovery_result_list);
+        statusTextView = (TextView) findViewById(R.id.status_text);
+        bridgeDiscoveryListView = (ListView) findViewById(R.id.bridge_discovery_result_list);
         bridgeDiscoveryListView.setOnItemClickListener(this);
-        bridgeIpTextView = (TextView)findViewById(R.id.bridge_ip_text);
+        bridgeIpTextView = (TextView) findViewById(R.id.bridge_ip_text);
         pushlinkImage = findViewById(R.id.pushlink_image);
-        bridgeDiscoveryButton = (Button)findViewById(R.id.bridge_discovery_button);
+        bridgeDiscoveryButton = (Button) findViewById(R.id.bridge_discovery_button);
         bridgeDiscoveryButton.setOnClickListener(this);
-        randomizeLightsButton = (Button)findViewById(R.id.randomize_lights_button);
+        randomizeLightsButton = (Button) findViewById(R.id.randomize_lights_button);
         randomizeLightsButton.setOnClickListener(this);
 
         // Connect to a bridge or start the bridge discovery
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Use the KnownBridges API to retrieve the last connected bridge
+     *
      * @return Ip address of the last connected bridge, or null
      */
     private String getLastUsedBridgeIp() {
@@ -352,5 +358,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+    }
+    public void sendRequest(RequestQueue queue, String url, String param) {
+        StringRequest putRequest = new StringRequest(Request.Method.PUT,
+                url+param,
+                (String response) -> {
+                    Log.d("RESPONSE", response);
+                },
+                (VolleyError error) -> {
+                    Log.d("ERROR",error.toString());
+                });
+        queue.add(putRequest);
     }
 }
